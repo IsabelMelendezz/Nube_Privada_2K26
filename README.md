@@ -1,4 +1,4 @@
-# AstroServers – Infraestructura Cloud Privada y Ciberseguridad
+# Infraestructura Nube Privada y Ciberseguridad
 Proyecto académico del curso **Sistemas Operativos II** (Universidad Mariano Gálvez de Guatemala), enfocado en el diseño, configuración y asegurado de una infraestructura virtualizada con segmentación de redes, replicación de bases de datos y servicios web. Se realizo el  diseño de la arquitectura de red segura (DMZ, bastión, firewall), las reglas de iptables, la configuración de DHCP/Squid, y del análisis de riesgos basado en MAGERIT alineado a ISO/IEC 27001:2013.
 
 ## Arquitectura de red
@@ -61,7 +61,7 @@ Todo el acceso externo pasa por el bastión, que se redirige según el puerto:
 
 - **Cliente** (server-id=1) y **DMZ** (server-id=2) replican bidireccionalmente la base umg_didactica.
 - Tráfico de replicación en el puerto 3306, permitido entre enp0s8 (red interna) y enp0s9 (DMZ) en el firewall.
-- Acceso externo vía ODBC: puerto 3306 Cliente, puerto 3307 DMZ (redireccionado desde el bastión).
+- Acceso externo vía ODBC: puerto **3306** Cliente, puerto **3307** DMZ (redireccionado desde el bastión).
 - slave_skip_errors configurado para tolerar conflictos típicos de replicación bidireccional (1062, 1396, 1410).
 
 ## Proxy transparente (Squid y SSL Bump)
