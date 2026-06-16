@@ -1,0 +1,12 @@
+network:
+  version: 2
+  renderer: NetworkManager
+  ethernets: 
+     enp0s9:
+      addresses: [20.10.10.26/24]
+    #  addresses: [12.10.100.26/24]
+      routes:
+        - to: default
+          via: 20.10.10.1 #puerta de enlace 
+      nameservers:
+        addresses: [20.10.10.1, 8.8.8.8]
