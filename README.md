@@ -1,5 +1,4 @@
 # AstroServers – Infraestructura Cloud Privada y Ciberseguridad
-
 Proyecto académico del curso **Sistemas Operativos II** (Universidad Mariano Gálvez de Guatemala), enfocado en el diseño, configuración y asegurado de una infraestructura virtualizada con segmentación de redes, replicación de bases de datos y servicios web. Se realizo el  diseño de la arquitectura de red segura (DMZ, bastión, firewall), las reglas de iptables, la configuración de DHCP/Squid, y del análisis de riesgos basado en MAGERIT alineado a ISO/IEC 27001:2013.
 
 ## Arquitectura de red
@@ -47,30 +46,27 @@ Proyecto académico del curso **Sistemas Operativos II** (Universidad Mariano G�
 
 Todo el acceso externo pasa por el bastión, que se redirige según el puerto:
 
------------------------------------------------------------------
-| Puerto    | Destino               | Servicio                  |
-|-----------------------------------|----------------------------
-| 22        | Lampaio (20.10.10.28) | SSH                       |
-| 23        | Cliente (10.10.10.26) | SSH                       |
-| 24        | DMZ (20.10.10.26)     | SSH                       |
-| 26        | Bastión (192.168.1.13)| SSH propio                |
-| 10001     | Cliente               | Webmin                    |
-| 10002     | DMZ                   | Webmin                    |
-| 80 / 1898 | Lampaio               | HTTP / app                |
-| 25, 110, 143 | DMZ                | SMTP, POP3, IMAP (correo) |
-----------------------------------------------------------------
+| Puerto externo (bastión) | Destino | Servicio |
+|---|---|---|
+| 22 | Lampaio (20.10.10.28) | SSH |
+| 23 | Cliente (10.10.10.26) | SSH |
+| 24 | DMZ (20.10.10.26) | SSH |
+| 26 | Bastión (192.168.1.13) | SSH propio |
+| 10001 | Cliente | Webmin |
+| 10002 | DMZ | Webmin |
+| 80 / 1898 | Lampaio | HTTP / app |
+| 25, 110, 143 | DMZ | SMTP, POP3, IMAP (correo) |
 
 ## Replicación de base de datos MySQL Master-Master
 
-- **Cliente** (server-id=1) y **DMZ** (server-id=2) replican bidireccionalmente la base `umg_didactica`.
-- Tráfico de replicación en el puerto 3306, permitido entre `enp0s8` (red interna) y `enp0s9` (DMZ) en el firewall.
+- **Cliente** (server-id=1) y **DMZ** (server-id=2) replican bidireccionalmente la base umg_didactica.
+- Tráfico de replicación en el puerto 3306, permitido entre enp0s8 (red interna) y enp0s9 (DMZ) en el firewall.
 - Acceso externo vía ODBC: puerto 3306 Cliente, puerto 3307 DMZ (redireccionado desde el bastión).
-- `slave_skip_errors` configurado para tolerar conflictos típicos de replicación bidireccional (1062, 1396, 1410).
+- slave_skip_errors configurado para tolerar conflictos típicos de replicación bidireccional (1062, 1396, 1410).
 
 ## Proxy transparente (Squid y SSL Bump)
 
 Squid corre en el bastión e intercepta el tráfico HTTP/HTTPS de ambas redes mediante reglas de `iptables` REDIRECT:
-
 - Puerto 80 → 3129 (intercept)
 - Puerto 443 → 3130 (intercept, ssl-bump)
 
